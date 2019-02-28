@@ -10,17 +10,17 @@ from sensor_msgs.msg import JointState
 import numpy as np
 import os, sys
 from birl_trajectory_excution.utils import get_current_angle
-from birl_trajectory_excution._constant import limb_name,limb
 import ipdb
 
 
-def inverse_kinematic(pose_list,one_point_mode=None):
 
+def inverse_kinematic(pose_list,point_mode=None,limb=None):
+    limb_name = [limb+'_s0', limb+'_s1', limb+'_e0', limb+'_e1', limb+'_w0', limb+'_w1', limb+'_w2'] 
     service_name = "/trac_ik_"+limb
     server_up = rospy.wait_for_service(service_name,timeout=5)
     ik_client = rospy.ServiceProxy(service_name, GetConstrainedPositionIK)
     req = GetConstrainedPositionIKRequest()
-    if one_point_mode != None:
+    if point_mode != None:
         row = pose_list
         test_point = PoseStamped()
         test_point.pose.position.x = row[0]
@@ -43,6 +43,7 @@ def inverse_kinematic(pose_list,one_point_mode=None):
     else:
         jointstate_list = [] 
         for idx, row in enumerate(pose_list):
+            ipdb.set_trace()
             test_point = PoseStamped()
             test_point.pose.position.x = row[0]
             test_point.pose.position.y = row[1]
